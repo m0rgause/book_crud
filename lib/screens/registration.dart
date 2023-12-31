@@ -203,7 +203,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               setState(() {
                                 amIHovering = true;
                               });
-                              Future.delayed(Duration(seconds: 1), () {
+                              Future.delayed(Duration(milliseconds: 100), () {
                                 setState(() {
                                   amIHovering = false;
                                 });
@@ -216,14 +216,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   gradient: LinearGradient(
                                       colors: amIHovering
                                           ? [
-                                              Color.fromRGBO(
-                                                  143, 148, 251, 0.8),
-                                              Color.fromRGBO(
-                                                  143, 148, 251, 0.4),
-                                            ]
-                                          : [
                                               Color.fromRGBO(143, 148, 251, 1),
                                               Color.fromRGBO(143, 148, 251, .6),
+                                            ]
+                                          : [
+                                              Color.fromRGBO(143, 148, 251, .6),
+                                              Color.fromRGBO(143, 148, 251, 1),
                                             ])),
                               child: Center(
                                 child: Text(

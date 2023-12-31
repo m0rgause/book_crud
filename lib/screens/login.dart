@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:get/get.dart';
+import '../controllers/auth_controller.dart';
 
 void main() => runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
       home: LoginScreen(),
     ));
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final AuthController authController = Get.put(AuthController());
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  bool amIHovering = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,6 +126,7 @@ class LoginScreen extends StatelessWidget {
                                               color: Color.fromRGBO(
                                                   143, 148, 251, 1)))),
                                   child: TextField(
+                                    controller: emailController,
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
                                         hintText: "Email",
@@ -125,6 +138,7 @@ class LoginScreen extends StatelessWidget {
                                   padding: EdgeInsets.all(8.0),
                                   child: TextField(
                                     obscureText: true,
+                                    controller: passwordController,
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
                                         hintText: "Password",
@@ -140,20 +154,43 @@ class LoginScreen extends StatelessWidget {
                       ),
                       FadeInUp(
                           duration: Duration(milliseconds: 1900),
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                gradient: LinearGradient(colors: [
-                                  Color.fromRGBO(143, 148, 251, 1),
-                                  Color.fromRGBO(143, 148, 251, .6),
-                                ])),
-                            child: Center(
-                              child: Text(
-                                "Login",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                          child: GestureDetector(
+                            onTap: () async {
+                              var res = await authController.login(
+                                  emailController.text,
+                                  passwordController.text);
+                              setState(() {
+                                amIHovering = true;
+                              });
+                              Future.delayed(Duration(milliseconds: 100), () {
+                                setState(() {
+                                  amIHovering = false;
+                                });
+                              });
+                            },
+                            child: Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  gradient: LinearGradient(
+                                      colors: amIHovering
+                                          ? [
+                                              Color.fromRGBO(143, 148, 251, 1),
+                                              Color.fromRGBO(143, 148, 251, .6),
+                                            ]
+                                          : [
+                                              Color.fromRGBO(143, 148, 251, .6),
+                                              Color.fromRGBO(143, 148, 251, 1),
+                                            ])),
+                              child: Center(
+                                child: Text(
+                                  "Login",
+                                  style: TextStyle(
+                                      color: amIHovering
+                                          ? Colors.white70
+                                          : Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
                             ),
                           )),
