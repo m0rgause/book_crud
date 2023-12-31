@@ -174,5 +174,50 @@ class AuthController extends GetxController {
     }
   }
 
-  void logout() {}
+  void logout() async {
+    try {
+      var headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${GetStorage().read('token')}'
+      };
+      var res = await _dio.delete(
+          'https://book-crud-service-6dmqxfovfq-et.a.run.app/api/user/logout',
+          options: Options(headers: headers)
+          // options: Options(headers: headers, method: 'POST')
+          );
+
+      GetStorage().remove('token');
+      GetStorage().remove('isLogin');
+
+      if (res.statusCode == 200) {
+        Get.snackbar(
+          'Success',
+          'Logout success',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          'Logout failed',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+      Get.offAllNamed('/login');
+    } catch (e) {
+      if (e is DioError) {
+        Get.snackbar(
+          'Logout Failed!',
+          e.response?.data['message'],
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      } else {
+        Get.snackbar(
+          'Logout Failed!',
+          e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    }
+  }
 }
